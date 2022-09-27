@@ -1,0 +1,105 @@
+swagger: '2.0'
+info:
+  title: 'ApexDv Blog Documentation'
+  description: 'This is the documentation for the ApexDv Blog API'
+  version: '1.0.0'
+  contact:
+    email: 'some@gmail.com'
+  license:
+    name: 'MIT'
+    url: 'https://opensource.org/licenses/MIT'
+  servers:
+    - url: 'api.blog.apexdv.com'
+      description: 'Production server'
+    - url: 'http://localhost:5000'
+      description: 'Development server'
+
+# host: 'api.blog.apexdv.com'
+
+schemes: ['https', 'http']
+
+basePath: '/api/v1/apexdv'
+
+paths:
+  /:
+    get:
+      summary: 'show app health'
+      description: 'check if app is running'
+      responses:
+        200:
+          description: 'Success'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'success'
+              message:
+                type: 'string'
+                example: 'Welcome to ApexDv Blog API'
+        500:
+          description: 'Internal server error'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Internal server error'
+  
+  /posts/create:
+    post:
+      summary: 'create a new post'
+      description: 'create a new post'
+      parameters:
+        - name: 'title'
+          in: 'formData'
+          description: 'title of the post'
+          required: true
+          type: 'string'
+        - name: 'body'
+          in: 'formData'
+          description: 'body of the post'
+          required: true
+          type: 'string'
+        - name: 'author'
+          in: 'formData'
+          description: 'author of the post'
+          required: true
+          type: 'string'
+      responses:
+        201:
+          description: 'Success'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'success'
+              message:
+                type: 'string'
+                example: 'Post created successfully'
+        400:
+          description: 'Bad request'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Bad request'
+        500:
+          description: 'Internal server error'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Internal server error'
