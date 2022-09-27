@@ -21,7 +21,7 @@ schemes: ['https', 'http']
 basePath: '/api/v1/apexdv'
 
 paths:
-  /:
+  /health:
     get:
       summary: 'show app health'
       description: 'check if app is running'
@@ -92,6 +92,211 @@ paths:
               message:
                 type: 'string'
                 example: 'Bad request'
+        500:
+          description: 'Internal server error'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Internal server error'
+
+  /posts:
+    get:
+      summary: 'get all posts'
+      description: 'get all posts'
+      responses:
+        200:
+          description: 'Success'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'success'
+              message:
+                type: 'string'
+                example: 'Posts retrieved successfully'
+              data:
+                type: 'array'
+                items:
+                  type: 'object'
+                  properties:
+                    id:
+                      type: 'integer'
+                      example: 1
+                    title:
+                      type: 'string'
+                      example: 'My first post'
+                    body:
+                      type: 'string'
+                      example: 'This is my first post'
+
+  /posts/:id:
+    get:
+      summary: 'get a single post'
+      description: 'get a single post'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          description: 'id of the post'
+          required: true
+          type: 'string'
+      responses:
+        200:
+          description: 'Success'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'success'
+              message:
+                type: 'string'
+                example: 'Post retrieved successfully'
+              data:
+                type: 'object'
+                properties:
+                  id:
+                    type: 'integer'
+                    example: 1
+                  title:
+                    type: 'string'
+                    example: 'My first post'
+                  body:
+                    type: 'string'
+                    example: 'This is my first post'
+        404:
+          description: 'Not found'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Post not found'
+        500:
+          description: 'Internal server error'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Internal server error'
+
+
+  /posts/update/:id:
+    patch:
+      summary: 'update a post'
+      description: 'update a post'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          description: 'id of the post'
+          required: true
+          type: 'string'
+        - name: 'title'
+          in: 'formData'
+          description: 'title of the post'
+          required: true
+          type: 'string'
+        - name: 'body'
+          in: 'formData'
+          description: 'body of the post'
+          required: true
+          type: 'string'
+        - name: 'author'
+          in: 'formData'
+          description: 'author of the post'
+          required: true
+          type: 'string'
+      responses:
+        200:
+          description: 'Success'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'success'
+              message:
+                type: 'string'
+                example: 'Post updated successfully'
+        400:
+          description: 'Bad request'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Bad request'
+        404:
+          description: 'Not found'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Post not found'
+        500:
+          description: 'Internal server error'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Internal server error'
+
+  /posts/delete/:id:
+    delete:
+      summary: 'delete a post'
+      description: 'delete a post'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          description: 'id of the post'
+          required: true
+          type: 'string'
+      responses:
+        200:
+          description: 'Success'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'success'
+              message:
+                type: 'string'
+                example: 'Post deleted successfully'
+        404:
+          description: 'Not found'
+          schema:
+            type: 'object'
+            properties:
+              status:
+                type: 'string'
+                example: 'error'
+              message:
+                type: 'string'
+                example: 'Post not found'
         500:
           description: 'Internal server error'
           schema:

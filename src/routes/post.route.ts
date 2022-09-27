@@ -14,9 +14,9 @@ const router = Router();
 router.post('/create', upload.single('image'), createPostController);
 router.patch('/update/:id', updatePostController);
 router.patch('/update/:id', updatePostImageController);
-router.get('/get', getAllPostsController);
-router.get('/get/:id', getPostByIdController);
 router.delete('/delete/:id', deletePostController);
 // router.delete('/delete', deleteAllPostsController);
+router.get('/:id', getPostByIdController);
+router.get('/', getAllPostsController);
 
 export default router;

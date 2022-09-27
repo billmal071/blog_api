@@ -13,8 +13,9 @@ import { s3Client } from '../helpers/do.cdn.helper';
 require('dotenv').config();
 
 const BUCKET = process.env.DO_BUCKET as string;
+
 export const createPostController = async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.file?.originalname) errorResponse(res, 'File is required', 400);
+  if (!req.file?.originalname) return errorResponse(res, 'File is required', 400);
   if (!req.file?.buffer) return errorResponse(res, 'File is required', 400);
   const params: PutObjectCommandInput = {
     Bucket: BUCKET,
@@ -47,6 +48,8 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
 
 export const getPostByIdController = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
+  if (!id) return errorResponse(res, 'Id is required', 400);
+  if (typeof id !== 'string') return errorResponse(res, 'Id must be a string', 400);
   try {
     const post = await getPostByIdService(id);
     return responseHandler(res, 'Post fetched successfully', 200, true, post);

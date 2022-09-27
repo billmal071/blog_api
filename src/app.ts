@@ -30,7 +30,7 @@ app.use(xss());
 app.use('/api/v1/apexdv/doc', swaggerUi.serve, swaggerUi.setup(swaggerJsDocs));
 app.use('/api/v1/apexdv/posts', postRoute);
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
+app.get('/api/v1/apexdv/health', (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({
     status: 'success',
     message: 'Welcome to ApexDv Blog API',
