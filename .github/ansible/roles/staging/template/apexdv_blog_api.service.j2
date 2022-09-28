@@ -1,0 +1,16 @@
+[Unit]
+Description=Apexdv_Blog_API
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=dev
+Group=dev
+Type=simple
+ExecStart=/usr/bin/pm2 start npm --name "apexdv_blog_api" -- start -- --port={{ app_port }}
+ExecStop=/usr/bin/pm2 stop apexdv_blog_api
+ExecReload=/usr/bin/pm2 reload apexdv_blog_api
+Restart: always
+
+[Install]
+WantedBy=multi-user.target

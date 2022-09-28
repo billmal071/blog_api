@@ -1,0 +1,9 @@
+[staging]
+167.99.2.5
+
+[prod]
+142.93.125.201
+
+[all:children]
+staging
+prod

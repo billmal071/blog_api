@@ -1,0 +1,89 @@
+name: Staging CI
+
+on:
+  push:
+    branches: ["staging"]
+  pull_request:
+    branches: ["staging"]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: scan and audit package.json
+        run: |
+          npm audit
+          npm audit fix --omit=dev --legacy-peer-deps
+
+  build:
+    needs: scan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: install deps and build
+        run: |
+          npm install --omit=dev --legacy-peer-deps
+          npm run build --if-present
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: build
+        run: |
+          npm install --omit=dev --legacy-peer-deps
+          npm run build --if-present
+
+      - name: deploy
+        env:
+          SECRET_KEY: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
+          KEY_FILE: ${{ secrets.KEY_FILE }}
+          USER: ${{ secrets.STAGING_USER }}
+          IP: ${{ secrets.STAGING_IP }}
+          FILE: ${{ secrets.VAULT_PASSWORD }}
+        run: |
+          tar -czvf artifact.tar.gz *
+          mkdir -p .github/ansible/roles/deploy/files/
+          mv artifact.tar.gz .github/ansible/roles/deploy/files/
+          ls -la .github/ansible/roles/deploy/files/
+          echo "$SECRET_KEY" > ~/$KEY_FILE
+          chmod 600 ~/$KEY_FILE
+          echo "$FILE" > ~/.vault_pass
+          cd .github/ansible
+          ansible-vault decrypt --vault-password-file ~/.vault_pass deploy-staging.yml
+          ansible-playbook -i inventory.txt --private-key ~/$KEY_FILE deploy-staging.yml

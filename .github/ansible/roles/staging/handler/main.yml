@@ -1,0 +1,30 @@
+---
+- name: start systemd service
+  systemd:
+    name: apexdv_blog_api.service
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    user: dev
+    group: dev
+    working_directory: /home/dev/apexdv_blog_api
+    exec_start: /usr/bin/pm2 start npm --name "apexdv_blog_api" -- start -- --port=3331
+    restart: always
+    restart_sec: 10
+
+- name: restart systemd service
+  systemd:
+    name: apexdv_blog_api.service
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
